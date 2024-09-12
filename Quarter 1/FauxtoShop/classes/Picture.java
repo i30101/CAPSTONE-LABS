@@ -502,6 +502,31 @@ public class Picture extends SimplePicture {
     public void blur() {
         // TODO complete the method here
         // 
+        Pixel[][] fromPixels = this.getPixels2D();
+        int length = fromPixels.length;
+        int width = fromPixels[0].length;
+        Pixel[][] toPixels = this.getPixels2D();
+        for (int row = 1; row < length - 1; row++) {
+            for (int col = 1; col < width - 1; col++) {
+                int red = 0;
+                int green = 0;
+                int blue = 0;
+                for (int nRow = row - 1; nRow < row + 2; nRow++) {
+                    for (int nCol = col - 1; nCol < col + 2; nCol++) {
+                        red += fromPixels[nRow][nCol].getRed();
+                        blue += fromPixels[nRow][nCol].getBlue();
+                        green += fromPixels[nRow][nCol].getGreen();
+                    }
+                }
+                toPixels[row][col].setColor(new Color(red / 9, green / 9, blue / 9));
+            }
+        }
+
+        for (int row = 0; row < length; row++) {
+            for (int col = 0; col < width; col++) {
+                fromPixels[row][col] = toPixels[row][col];
+            }
+        }
     }
 
     /** 
