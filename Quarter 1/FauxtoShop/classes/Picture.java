@@ -485,12 +485,45 @@ public class Picture extends SimplePicture {
     @author Andrew Kim
     */
     public void pixelate(int resolution) {
-        // TODO complete the method here
-        Pixel[][] fromPixels = this.getPixels2D();
-        Pixel[][] toPixels = new Pixel[fromPixels.length][fromPixels[0].length];
-        for (int rowBlock = 0; rowBlock < fromPixels.length; rowBlock += resolution) {
-            for (int colBlock = 0; colBlock < fromPixels[0].length; colBlock += resolution) {
-                
+        Pixel[][] pixels = this.getPixels2D();
+        int length = pixels.length;
+        int width = pixels[0].length;
+        for (int rowBlock = 0; rowBlock < length / resolution + 1; rowBlock++) {
+            for (int colBlock = 0; colBlock < width / resolution + 1; colBlock++) {
+                // pixel values
+                int red = 0;
+                int green = 0;
+                int blue = 0;
+
+                // max
+                int rowMax = (rowBlock + 1) * resolution;
+                if (rowMax > length) {
+                    rowMax = length;
+                }
+                int colMax = (colBlock + 1) * resolution;
+                if (colMax > width) {
+                    colMax = width;
+                }
+
+                // traverse grid
+                for (int row = rowBlock * resolution; row < rowMax; row++) {
+                    for (int col = colBlock * resolution; col < colMax; col++) {
+                        red += pixels[row][col].getRed();
+                        green += pixels[row][col].getGreen();
+                        blue += pixels[row][col].getBlue();
+                    }
+                }
+
+                red = red / (resolution * resolution);
+                green = green / (resolution * resolution);
+                blue = blue / (resolution * resolution);
+                System.out.println(red + " " + green + " " + blue);
+                // assign grid
+                for (int row = rowBlock * resolution; row < rowMax; row++) {
+                    for (int col = colBlock * resolution; col < colMax; col++ ) {
+                        pixels[row][col].setColor(new Color(red, green, blue));
+                    }
+                }
             }
         }
     }
