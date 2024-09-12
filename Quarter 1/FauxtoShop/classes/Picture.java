@@ -1,10 +1,5 @@
 import java.awt.*;
-import java.awt.font.*;
-import java.awt.geom.*;
 import java.awt.image.BufferedImage;
-import java.text.*;
-import java.util.*;
-import java.util.List; // resolves problem with java.awt.List and java.util.List
 
 /**
  * A class that represents a picture.  This class inherits from 
@@ -175,11 +170,19 @@ public class Picture extends SimplePicture {
      * @param x the percentage by which we want to modify the red pixels by
      */  
     public void modifyRed(int x) {
-        // TODO complete the method here
         Pixel[][] pixels = this.getPixels2D();
         for (int row = 0; row < pixels.length; row++) {
             for (int col = 0; col < pixels[row].length; col++) {
-
+                Pixel pixelObj = pixels[row][col];
+                if (x < 0 || x > 200) {
+                    return;
+                }
+                int newRed = pixelObj.getRed();
+                newRed = newRed + ((int) newRed * x / 100);
+                if (newRed > 255) {
+                    newRed = 255;
+                }
+                pixelObj.setRed(newRed);
             }
         }
     }
@@ -191,11 +194,19 @@ public class Picture extends SimplePicture {
      * @param x the percentage by which we want to modify the blue pixels by
      */    
     public void modifyGreen(int x) {
-        // TODO complete the method here
         Pixel[][] pixels = this.getPixels2D();
         for (int row = 0; row < pixels.length; row++) {
             for (int col = 0; col < pixels[row].length; col++) {
-
+                Pixel pixelObj = pixels[row][col];
+                if (x < 0 || x > 200) {
+                    return;
+                }
+                int newGreen = pixelObj.getGreen();
+                newGreen = newGreen + ((int) newGreen * x / 100);
+                if (newGreen > 255) {
+                    newGreen = 255;
+                }
+                pixelObj.setRed(newGreen);
             }
         }
     }
@@ -207,11 +218,19 @@ public class Picture extends SimplePicture {
      * @param x the percentage by which we want to modify the blue pixels by 
      */   
     public void modifyBlue(int x) {
-        // TODO complete the method here
         Pixel[][] pixels = this.getPixels2D();
         for (int row = 0; row < pixels.length; row++) {
             for (int col = 0; col < pixels[row].length; col++) {
-                
+                Pixel pixelObj = pixels[row][col];
+                if (x < 0 || x > 200) {
+                    return;
+                }
+                int newBlue = pixelObj.getBlue();
+                newBlue = newBlue + ((int) newBlue * x / 100);
+                if (newBlue > 255) {
+                    newBlue = 255;
+                }
+                pixelObj.setRed(newBlue);
             }
         }
     }
@@ -268,42 +287,94 @@ public class Picture extends SimplePicture {
      * Method to grayscale the picture - change every pixel to its equvalently bright or dark shade of gray
      */
     public void grayscale() {
-        // TODO complete the method here
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        for(int row = 0; row< pixels.length; row++) {
+            for(int col = 0; col<pixels[row].length; col++) {
+                pixel = pixels[row][col];
+                int temp =(pixel.getRed()+pixel.getGreen()+pixel.getBlue())/3;
+                pixel.setRed(temp);
+                pixel.setGreen(temp);
+                pixel.setBlue(temp); 
+            }
+        }
     }              
     
     /** Method that mirrors the picture around a 
      * vertical mirror in the center of the picture
      * from left to right */
     public void mirrorVertical() {
-        // TODO complete the method here
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        for(int row = 0; row< pixels.length; row++) {
+            for(int col = 0; col<(pixels[row].length)/2; col++) {
+                pixel = pixels[row][pixels[row].length-col-1];
+                pixel.setColor(new Color(pixels[row][col].getRed(), pixels[row][col].getGreen(), pixels[row][col].getBlue()));
+            }
+        }
+        
     }
     
     /** Method that mirrors the picture around a 
      * vertical mirror in the center of the picture
      * from right to left */   
     public void mirrorVerticalRightToLeft() {
-        // TODO complete the method here
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        for(int row = 0; row< pixels.length; row++) {
+            for(int col = (pixels[row].length)/2; col<pixels[row].length; col++) {
+                pixel = pixels[row][pixels[row].length-col-1];
+                pixel.setColor(new Color(pixels[row][col].getRed(), pixels[row][col].getGreen(), pixels[row][col].getBlue()));
+            }
+        }
     } 
     
     /** Method that mirrors the picture around a 
      * horizontal mirror in the center of the picture
      * from top to bottom */   
     public void mirrorHorizontal() {
-        // TODO complete the method here
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        for(int row = 0; row< pixels.length/2; row++) {
+            for(int col = 0; col<pixels[row].length; col++) {
+                pixel = pixels[pixels.length-row-1][col];
+                pixel.setColor(new Color(pixels[row][col].getRed(), pixels[row][col].getGreen(), pixels[row][col].getBlue()));
+            }
+        }
     }
     
     /** Method that mirrors the picture around a 
      * horizontal mirror in the center of the picture
      * from bottom to top */   
     public void mirrorHorizontalBotToTop() {
-        // TODO complete the method here
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        for(int row = pixels.length/2; row< pixels.length; row++) {
+            for(int col = 0; col<pixels[row].length; col++) {
+                pixel = pixels[pixels.length-row-1][col];
+                pixel.setColor(new Color(pixels[row][col].getRed(), pixels[row][col].getGreen(), pixels[row][col].getBlue()));
+            }
+        }
     }
         
     /** Method that mirrors the picture around a 
      * diagonal mirror from the upper-left corner
      * to the lower-right  */   
     public void mirrorDiagonal() {
-        // TODO complete the method here
+        int max;
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        if (pixels.length>pixels[0].length) {
+            max = pixels[0].length;
+        } else {
+            max = pixels.length;
+        }
+        for(int row = 0; row< max; row++) {
+            for(int col = 0; col<max-row; col++) {
+                pixel = pixels[pixels.length-col-1-(pixels.length-max)][pixels[row].length-row-1-(pixels[row].length-max)];
+                pixel.setColor(new Color(pixels[row][col].getRed(), pixels[row][col].getGreen(), pixels[row][col].getBlue()));
+            }
+        }
     }
     
     /** Method that mirrors the picture around a 
@@ -311,6 +382,7 @@ public class Picture extends SimplePicture {
      * to the lower-left  */   
     public void mirrorDiagonalOpposite() {
         // TODO complete the method here
+        // @Matthew
     }	
         
     /** copy from the passed fromPic to the
@@ -373,8 +445,19 @@ public class Picture extends SimplePicture {
     * Method to sepia tone the picture
     */
     public void sepiatone() {
-        // TODO complete the method here
+        Pixel[][] pixels = this.getPixels2D();
+        for (int row = 0; row < pixels.length; row++) {
+            for (int col = 0; col < pixels[row].length; col++) {
+                Pixel pixelObj = pixels[row][col];
+                int currentRed = pixelObj.getRed();
+                int currentGreen = pixelObj.getGreen();
+                int currentBlue = pixelObj.getBlue();
 
+                pixelObj.setRed((int) ((currentRed * 0.393) + (currentGreen * 0.769) + (currentBlue * 0.189)));
+                pixelObj.setGreen((int) ((currentRed * 0.349) + (currentGreen * 0.686) + (currentBlue * 0.168)));
+                pixelObj.setBlue((int) ((currentRed * 0.272) + (currentGreen * 0.534) + (currentBlue * 0.131)));
+            }
+        }
     }
 
     /** Method to show large changes in color 
@@ -382,6 +465,7 @@ public class Picture extends SimplePicture {
      */
     public void edgeDetection(int edgeDist) {
         // TODO complete the method here
+        // @Matthew
     }
         
     /** 
@@ -390,6 +474,13 @@ public class Picture extends SimplePicture {
     */
     public void pixelate(int resolution) {
         // TODO complete the method here
+        Pixel[][] fromPixels = this.getPixels2D();
+        Pixel[][] toPixels = new Pixel[fromPixels.length][fromPixels[0].length];
+        for (int rowBlock = 0; rowBlock < fromPixels.length; rowBlock += resolution) {
+            for (int colBlock = 0; colBlock < fromPixels[0].length; colBlock += resolution) {
+                
+            }
+        }
     }
     
     /** 
@@ -444,6 +535,7 @@ public class Picture extends SimplePicture {
         */
     public void encode(Picture messagePict) {
         // TODO complete the method here
+        // @Matthew
     }
     
     /**
@@ -453,7 +545,19 @@ public class Picture extends SimplePicture {
      */
     public Picture decode() {
         // TODO complete the method here
+        // @Matthew
         return this;
+    }
+
+
+    /**
+     * Surprise
+     * @author Andrew Kim
+     */
+    public void surprise() {
+        posterize();
+        pixelate(4);
+        
     }
     
     /** 

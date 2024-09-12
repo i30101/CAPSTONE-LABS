@@ -266,6 +266,10 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
         JButton button_mirrorDiag = new JButton("Mirror Diag");
         button_mirrorDiag.addActionListener(new Listener_MirrorDiag());
         sub_panel.add(button_mirrorDiag);
+
+        JButton button_mirrorOp = new JButton("Mirror Diag Op");
+        button_mirrorOp.addActionListener(new Listener_MirrorOp());
+        sub_panel.add(button_mirrorOp);
         
         JButton button_pixelate = new JButton("Pixelate");
         button_pixelate.addActionListener(new Listener_Pixelate());
@@ -282,6 +286,11 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
         JButton button_decode = new JButton("Decode");
         button_decode.addActionListener(new Listener_Decode());
         sub_panel.add(button_decode);
+
+        JButton button_surprise = new JButton("Surprise");
+        button_surprise.addActionListener(new Listener_Surprise());
+        sub_panel.add(button_surprise);
+        
     
         panel.add(sub_panel, BorderLayout.EAST);
         return panel;
@@ -1207,6 +1216,13 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
             updatePicture(); 
         }
     }
+
+    private class Listener_MirrorOp implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            ((Picture) picture).mirrorDiagonalOpposite();
+            updatePicture();
+        }
+    }
     
     private class Listener_Pixelate implements ActionListener {	      
         public void actionPerformed(ActionEvent e) {
@@ -1256,6 +1272,13 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
             updatePicture(); 
         }
     }  
+
+    private class Listener_Surprise implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            ((Picture) picture).surprise();
+            updatePicture();
+        }
+    }
     
     /**
     * Test Main.  
