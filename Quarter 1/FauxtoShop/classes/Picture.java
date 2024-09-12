@@ -391,8 +391,20 @@ public class Picture extends SimplePicture {
      * diagonal mirror from the upper-right corner
      * to the lower-left  */   
     public void mirrorDiagonalOpposite() {
-        // TODO complete the method here
-        // @Matthew
+        int max;
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        if (pixels.length>pixels[0].length) {
+            max = pixels[0].length;
+        } else {
+            max = pixels.length;
+        }
+        for(int row = 0; row< max; row++) {
+            for(int col = row; col<max; col++) {
+                pixel = pixels[col][row];
+                pixel.setColor(new Color(pixels[row][col].getRed(), pixels[row][col].getGreen(), pixels[row][col].getBlue()));
+            }
+        }
     }	
         
     /** copy from the passed fromPic to the
@@ -475,8 +487,75 @@ public class Picture extends SimplePicture {
      * @param edgeDist the distance for finding edges
      */
     public void edgeDetection(int edgeDist) {
-        // TODO complete the method here
-        // @Matthew
+        Pixel[][] pixels = this.getPixels2D();
+        int minR;
+        int minG;
+        int minB;
+        int maxR;
+        int maxG;
+        int maxB;
+        int colordiff = 50;
+        boolean edge = false;
+        Pixel temp;
+        int width = 5;
+        for (int row= 0; row +width<pixels.length;row+=width) {
+            for (int col=0; col+width<pixels[0].length;col+=width) {
+                    minR = pixels[row][col].getRed();
+                    maxR = pixels[row][col].getRed();
+                    minG = pixels[row][col].getGreen();
+                    maxG = pixels[row][col].getGreen();
+                    minB = pixels[row][col].getBlue();
+                    maxB = pixels[row][col].getBlue();
+                for (int scanrow=row; scanrow<row+width; scanrow++) {
+                    for (int scancol=col; scancol<col+width;scancol++) {
+                        if (pixels[scanrow][scancol].getRed()<minR) {
+                            minR = pixels[scanrow][scancol].getRed();
+                        }
+                        if (pixels[scanrow][scancol].getGreen()<minG) {
+                            minG = pixels[scanrow][scancol].getGreen();
+                        }
+                        if (pixels[scanrow][scancol].getBlue()<minB) {
+                            minB = pixels[scanrow][scancol].getBlue();
+                        }
+                        if (pixels[scanrow][scancol].getRed()>maxR) {
+                            maxR = pixels[scanrow][scancol].getRed();
+                        }
+                        if (pixels[scanrow][scancol].getGreen()>maxG) {
+                            maxG = pixels[scanrow][scancol].getGreen();
+                        }
+                        if (pixels[scanrow][scancol].getBlue()>maxB) {
+                            maxB = pixels[scanrow][scancol].getBlue();
+                        }
+                    }
+                }
+                if (maxB-minB>colordiff) {
+                    edge = true;
+                }
+                if (maxG-minG>colordiff) {
+                    edge = true;
+                }
+                if (maxR-minR>colordiff) {
+                    edge = true;
+                }
+                if (edge) {
+                    for (int scanrow=row; scanrow<row+width; scanrow++) {
+                    for (int scancol=col; scancol<col+width;scancol++) {
+                        temp = pixels[scanrow][scancol];
+                        temp.setColor(new Color(255,255,255));
+                    }
+                }
+                edge = false;
+                } else {
+                    for (int scanrow=row; scanrow<row+width; scanrow++) {
+                        for (int scancol=col; scancol<col+width;scancol++) {
+                            temp = pixels[scanrow][scancol];
+                            temp.setColor(new Color(0,0,0));
+                        }
+                    } 
+                }
+                
+            }
+        }
     }
         
     /** 
@@ -640,21 +719,57 @@ public class Picture extends SimplePicture {
         * picture by changing the red to even and then
         * setting it to odd if the message pixel is black 
         * @param messagePict the picture with a message
+        @author Matthew Lee
         */
     public void encode(Picture messagePict) {
-        // TODO complete the method here
-        // @Matthew
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel[][] messagePictPixels = messagePict.getPixels2D();
+        Pixel pixel;
+        for (int row=0;row<pixels.length;row++) {
+            if (row<messagePictPixels.length) {
+            for (int col=0;col<pixels[0].length;col++) {
+                if (col < messagePictPixels[0].length) {
+                pixel = pixels[row][col];
+                System.out.println(row + " " + col);
+                if (messagePictPixels[row][col].getRed() == 0) {
+                    if (pixel.getRed()%2==0) {
+                        pixel.setRed(pixel.getRed()+1);
+                    }
+                } else {
+                    if (pixel.getRed()%2==1) {
+                        pixel.setRed(pixel.getRed()+1);
+                    }
+                }
+            }
+            }
+        }
+        }
     }
     
     /**
      * Method to decode a message hidden in the
      * red value of the current picture
      * @return the picture with the hidden message (this)
+     * @author Matthew Lee
      */
     public Picture decode() {
-        // TODO complete the method here
-        // @Matthew
-        return this;
+        Pixel[][] pixels = this.getPixels2D();
+        Picture rpic = new Picture(pixels.length, pixels[0].length);
+        Pixel[][] rpix = rpic.getPixels2D();
+        Pixel thepixel;
+        for (int row=0;row<pixels.length;row++) {
+            if (row<rpix.length) {
+            for (int col=0;col<pixels[0].length;col++) {
+                if (col<rpix[0].length) {
+                thepixel = rpix[row][col];
+                if (pixels[row][col].getRed()%2 != 0) {
+                    thepixel.setColor(new Color(0,0,0));
+                } 
+            }
+            }
+        }
+        }
+        return rpic;
     }
 
 
