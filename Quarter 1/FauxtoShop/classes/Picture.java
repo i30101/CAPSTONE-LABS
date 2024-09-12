@@ -84,6 +84,7 @@ public class Picture extends SimplePicture {
 
     /** 
      * Method to set the red to 0  
+     * @author Andrew Kim
      */
     public void zeroRed() {
         Pixel[][] pixels = this.getPixels2D();
@@ -97,6 +98,7 @@ public class Picture extends SimplePicture {
     
     /** 
      * Method to set the green to 0  
+     * @author Andrew Kim
      */   
     public void zeroGreen() {
         Pixel[][] pixels = this.getPixels2D();
@@ -110,6 +112,7 @@ public class Picture extends SimplePicture {
     
     /** 
      * Method to set the blue to 0  
+     * @author Andrew Kim
      */
     public void zeroBlue() {
         Pixel[][] pixels = this.getPixels2D();
@@ -123,6 +126,7 @@ public class Picture extends SimplePicture {
     
     /** 
      * Method to keep just the red  
+     * @author Andrew Kim
      */    
     public void keepOnlyRed() {
         Pixel[][] pixels = this.getPixels2D();
@@ -137,6 +141,7 @@ public class Picture extends SimplePicture {
     
     /** 
      * Method to keep just the green  
+     * @author Andrew Kim
      */    
     public void keepOnlyGreen() {
         Pixel[][] pixels = this.getPixels2D();
@@ -151,6 +156,7 @@ public class Picture extends SimplePicture {
 
     /** 
      * Method to keep just the blue  
+     * @author Andrew Kim
      */       
     public void keepOnlyBlue() {
         Pixel[][] pixels = this.getPixels2D();
@@ -168,6 +174,7 @@ public class Picture extends SimplePicture {
      * modifyRed(100) nets no change, modifyRed(50) decreases the red to 50% of its original value
      * modifyRed(200) increases the red by 100% 
      * @param x the percentage by which we want to modify the red pixels by
+     * @author Andrew Kim
      */  
     public void modifyRed(int x) {
         Pixel[][] pixels = this.getPixels2D();
@@ -192,6 +199,7 @@ public class Picture extends SimplePicture {
      * modifyGreen(100) nets no change, modifyGreen(50) decreases the green to 50% of its original value
      * modifyGreen(200) increases the green by 100% 
      * @param x the percentage by which we want to modify the blue pixels by
+     * @author Andrew Kim
      */    
     public void modifyGreen(int x) {
         Pixel[][] pixels = this.getPixels2D();
@@ -216,6 +224,7 @@ public class Picture extends SimplePicture {
      * modifyBlue(100) nets no change, modifyBlue(50) decreases the blue to 50% of its original value
      * modifyBlue(200) increases the blue by 100% 
      * @param x the percentage by which we want to modify the blue pixels by 
+     * @author Andrew Kim
      */   
     public void modifyBlue(int x) {
         Pixel[][] pixels = this.getPixels2D();
@@ -285,6 +294,7 @@ public class Picture extends SimplePicture {
     
     /** 
      * Method to grayscale the picture - change every pixel to its equvalently bright or dark shade of gray
+     * @author Andrew Kim
      */
     public void grayscale() {
         Pixel[][] pixels = this.getPixels2D();
@@ -443,6 +453,7 @@ public class Picture extends SimplePicture {
         
     /** 
     * Method to sepia tone the picture
+    @author Andrew Kim
     */
     public void sepiatone() {
         Pixel[][] pixels = this.getPixels2D();
@@ -471,6 +482,7 @@ public class Picture extends SimplePicture {
     /** 
     * Method to pixelate the picture (low bit video game effect)
     * @param resolution the block size that we simulate for each pixel
+    @author Andrew Kim
     */
     public void pixelate(int resolution) {
         // TODO complete the method here
@@ -485,6 +497,7 @@ public class Picture extends SimplePicture {
     
     /** 
      * Method to blur the picture
+     * @author Andrew Kim
      */
     public void blur() {
         // TODO complete the method here
@@ -506,16 +519,45 @@ public class Picture extends SimplePicture {
 
     /** 
     * Method to posterize the picture - reduce to only 3-4 colors of your choice
+    * @author Andrew Kim
     */
     public void posterize() {
-        // TODO complete the method here
-    }	
-
+        Color[] colors = {new Color(120,0,0), new Color(193,18,31), new Color(253,240,213), new Color(0,48,73), new Color(102,155,188)};
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        for (int row = 0; row < pixels.length; row++) {
+            for (int col = 0; col < pixels[0].length; col++) {
+                pixel = pixels[row][col];
+                int closestIndex = 0;
+                double[] distances = new double[colors.length];
+                for (int i = 0; i < colors.length; i++) {
+                    distances[i] = distance(pixel, colors[i]);
+                    if (i != 0 && distances[i] < distances[closestIndex]) {
+                        closestIndex = i;
+                    }
+                }
+                pixel.setColor(colors[closestIndex]);
+            }
+        }
+    }
     /**
     * Method for copying the no-green pixels from left side of a picture (with green background) to the right side
+    * @author Andrew Kim
     */  
     public void greenScreen() {
-        // TODO complete the method here
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        for (int row = 0; row < pixels.length; row++) {
+            for (int col = 0; col < pixels[0].length / 2; col++) {
+                pixel = pixels[row][col];
+                int red = pixel.getRed();
+                int green = pixel.getGreen();
+                int blue = pixel.getBlue();
+                if ((green < blue || green < red) || (green - blue < 50 || green - red < 50)) {
+                    pixels[row][pixels[0].length - 1 - col].setColor(pixel.getColor());
+                }
+            }
+        }
     }			
 
     /** 
@@ -524,8 +566,18 @@ public class Picture extends SimplePicture {
     * @param c the color we want to keep
     */  	
     public void colorSplash(Color c) {
-        // TODO complete the method here
-        // 
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel pixel = null;
+        for (int row = 0; row < pixels.length; row++) {
+            for (int col = 0; col < pixels[0].length; col++) {
+                pixel = pixels[row][col];
+                if (distance(pixel, c) > 50) {
+                    int grayscale = (pixel.getRed() + pixel.getGreen() + pixel.getBlue()) / 3;
+                    pixel.setColor(new Color(grayscale, grayscale, grayscale));
+                    
+                }
+            }
+        }
     }	
         
     /** Hide a black and white message in the current
