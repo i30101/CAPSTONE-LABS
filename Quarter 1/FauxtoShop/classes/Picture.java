@@ -533,8 +533,6 @@ public class Picture extends SimplePicture {
      * @author Andrew Kim
      */
     public void blur() {
-        // TODO complete the method here
-        // 
         Pixel[][] fromPixels = this.getPixels2D();
         int length = fromPixels.length;
         int width = fromPixels[0].length;
