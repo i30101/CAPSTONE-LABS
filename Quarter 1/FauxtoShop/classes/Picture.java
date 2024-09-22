@@ -1,3 +1,4 @@
+//problem with encode/decode
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
