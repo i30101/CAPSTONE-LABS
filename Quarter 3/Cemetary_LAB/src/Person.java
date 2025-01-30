@@ -1,14 +1,12 @@
 /**
- * @author Andrew Kim
+ * @author Andrew Kim and Matthew Lee
  * @since 28 January 2025
  * @version 1.0.0
  */
 
 public class Person {
 
-    private final String name;
     private final String firstName;
-    private final String middleName;
     private final String lastName;
 
     private final int burialDay;
@@ -24,9 +22,7 @@ public class Person {
 
     /**
      * Creates Person class
-     * @param n full name
      * @param fn first name
-     * @param mn middle name
      * @param ln last name
      * @param d burial month
      * @param m burial month
@@ -37,14 +33,12 @@ public class Person {
      * @param stn street number
      */
     public Person(
-            String n, String fn, String mn, String ln,
+            String fn, String ln,
             int d, int m, int y,
             double a,
             String ad, String st, String stn
     ) {
-        name = n;
         firstName = fn;
-        middleName = mn;
         lastName = ln;
 
         burialDay = d;
@@ -60,15 +54,11 @@ public class Person {
 
 
     public String getName() {
-        return name;
+        return firstName + " " + lastName;
     }
 
     public String getFirstName() {
         return firstName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
     }
 
     public String getLastName() {
@@ -91,6 +81,14 @@ public class Person {
         return age;
     }
 
+    public String getAgeString() {
+        if (age < 1) {
+            return "0";
+        } else {
+            return String.valueOf((int) (age));
+        }
+    }
+
     public String getAddress() {
         return address;
     }
@@ -104,8 +102,12 @@ public class Person {
     }
 
 
+    /**
+     * Summarizes person's details
+     * @return summary of person
+     */
     @Override
     public String toString() {
-        return firstName + " " + middleName + " " + lastName;
+        return getName() + ", died " + burialMonth + "/" + burialDay + "/" + burialYear + " at age " + getAgeString();
     }
 }
