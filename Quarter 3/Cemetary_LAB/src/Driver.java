@@ -7,11 +7,19 @@
 import java.util.ArrayList;
 
 public class Driver {
-    public static void main(String[] args) {
-        ArrayList<Person> test = FileReader.readFile("./data/cemetery_orig.txt", 5);
-        assert test != null;
-        for (Person p: test) {
-            System.out.println(p.getAddress() + ", " + p.getStreetNumber() + " " + p.getStreet());
+
+    private static <E> void printArrayList(ArrayList<E> list) {
+        for (E item : list) {
+            System.out.println(item);
         }
+    }
+
+    public static void main(String[] args) {
+        Cemetery cemetary = new Cemetery("./data/cemetery_orig.txt", 5);
+
+        ArrayList<Person> people = cemetary.sortFirstName();
+
+        printArrayList(people);
+
     }
 }
