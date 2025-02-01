@@ -129,7 +129,7 @@ public class FileReader {
             return people;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<Person>();
         }
     }
 }
