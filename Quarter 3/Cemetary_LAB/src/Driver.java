@@ -1,12 +1,40 @@
 /**
- * @author Andrew Kim
+ * @author Andrew Kim and Matthew Lee
  * @since 30 January 2025
  * @version 1.0.0
  */
 
+import jdk.jshell.spi.ExecutionControlProvider;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
 
 public class Driver {
+    private static Cemetery cemetery;
+    private static Scanner scanner;
+
+
+    private static final String INSTRUCTIONS = """
+            \s
+            \s
+            1. Show people in cemetery
+            2. Search for people in cemetery
+            3. Get age and death data
+            0. Exit
+           \s
+            Enter your choice:\s""";
+
+
+    private static String getChoiceLetter(String[] options) {
+        String input = "";
+        while (!Arrays.asList(options).contains(input)) {
+            input = scanner.nextLine();
+        }
+        return input;
+    }
 
     private static <E> void printArrayList(ArrayList<E> list) {
         for (E item : list) {
@@ -14,12 +42,166 @@ public class Driver {
         }
     }
 
+    private static void printYearMortalities() {
+        int[][] mortalities = cemetery.yearMortalities();
+
+        for (int[] mortality : mortalities) {
+            System.out.println("Year: " + mortality[0] + "\t" + "Mortalities: " + mortality[1]);
+        }
+    }
+
+
+
     public static void main(String[] args) {
-        Cemetery cemetary = new Cemetery("./data/cemetery_orig.txt", 5);
+        cemetery = new Cemetery("./data/cemetery_orig.txt", 5);
+        scanner = new Scanner(System.in);
 
-        ArrayList<Person> people = cemetary.sortFirstName();
 
-        printArrayList(people);
+        System.out.println("**************** Welcome to the cemetery!! ****************");
+
+        boolean playing = true;
+
+        String input;
+
+        while (playing) {
+            System.out.print(INSTRUCTIONS);
+
+            input = scanner.nextLine();
+
+            try {
+                int choice = Integer.parseInt(input);
+
+                if (choice == 0) {
+                    playing = false;
+                } else if (choice == 1) {
+                    System.out.println("""
+                                \s
+                                \s
+                                a. Everyone ordered by last name
+                                b. Everyone ordered by first name
+                                c. Everyone ordered by burial date
+                                d. Everyone ordered by age
+                                e. Everyone ordered by address
+                                """);
+
+                    input = getChoiceLetter(new String[]{"a", "b", "c", "d", "e"});
+
+                    switch (input) {
+                        case "a" -> printArrayList(cemetery.sortLastName());
+                        case "b" -> printArrayList(cemetery.sortFirstName());
+                        case "c" -> printArrayList(cemetery.sortBurialDate());
+                        case "d" -> printArrayList(cemetery.sortAge());
+                        default -> printArrayList(cemetery.sortAddress());
+                    }
+                } else if (choice == 2) {
+                    System.out.println("""
+                            \s
+                            \s
+                             a. Everyone with a desired name
+                             b. Everyone with a desired first name
+                             c. Everyone with a desired last name
+                             d. Everyone with a given address
+                             e. Everyone with a given age
+                             f. Everyone older than a given age
+                             g. Everyone younger than a given age
+                             h. Every infant
+                            \s""");
+
+                    input = getChoiceLetter(new String[]{"a", "b", "c", "d", "e", "f", "g", "h"});
+
+                    ArrayList<Person> searchResults = cemetery.infants();
+
+                    if (!input.equals("h")) {
+                        System.out.print("Enter your search query: ");
+
+                        String searchInput = scanner.nextLine();
+
+                        try {
+                            int searchNumber = Integer.parseInt(searchInput);
+                            switch (input) {
+                                case "e" -> searchResults = cemetery.isAge(searchNumber);
+                                case "f" -> searchResults = cemetery.olderThanAge(searchNumber);
+                                case "g" -> searchResults = cemetery.youngerThanAge(searchNumber);
+                            }
+                        } catch (Exception e) {
+                            switch (input) {
+                                case "a" -> searchResults = cemetery.hasName(searchInput);
+                                case "b" -> searchResults = cemetery.hasFirstName(searchInput);
+                                case "c" -> searchResults = cemetery.hasLastName(searchInput);
+                            }
+                        }
+                    }
+
+                    if (searchResults.isEmpty()) {
+                        System.out.println("No results found");
+                    } else {
+                        printArrayList(searchResults);
+                    }
+                } else if (choice == 3) {
+                    System.out.println("""
+                            \s
+                            \s
+                            a. Average age of death
+                            b. Deadliest year
+                            c. Least deadly year
+                            d. Max age
+                            e. Count number with given age
+                            f. Count number older than a given age
+                            g. Count number younger than a given age
+                            h. Count infants
+                            """);
+
+                    input = getChoiceLetter(new String[]{"a", "b", "c", "d", "e", "f", "g", "h"});
+
+
+                    if (input.equals("e") || input.equals("f") || input.equals("g")) {
+                        System.out.print("Enter your search query: ");
+
+                        String searchInput = scanner.nextLine();
+
+                        try {
+                            int searchNumber = Integer.parseInt(searchInput);
+
+                            switch (input) {
+                                case "e":
+                                    System.out.println("Number of people " + searchNumber + " years old: " + cemetery.countIsAge(searchNumber));
+                                    break;
+                                case "f":
+                                    System.out.println("Number of people older than " + searchNumber + " years: " + cemetery.countOlderThanAge(searchNumber));
+                                    break;
+                                case "g":
+                                    System.out.println("Number of people younger than " + searchNumber + " years: " + cemetery.countYoungerThanAge(searchNumber));
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Invalid input, please try again");
+                        }
+                    } else {
+                        switch (input) {
+                            case "a":
+                                System.out.println(cemetery.getAverageAge());
+                                break;
+                            case "b":
+                                int[] deadliestYear = cemetery.deadliestYear();
+                                System.out.println("Deadliest year: " + deadliestYear[0] + ", fatalities: " + deadliestYear[1]);
+                                break;
+                            case "c":
+                                int[] leastDeadlyYear = cemetery.leastDeadlyYear();
+                                System.out.println("Least deadly year: " + leastDeadlyYear[0] + ", fatalities: " + leastDeadlyYear[1]);
+                                break;
+                            case "d":
+                                System.out.println("Max age: " + cemetery.maxAge());
+                                break;
+                            default:
+                                System.out.print("Number of infants: " + cemetery.countInfants());
+                        }
+                    }
+                } else {
+                    System.out.println("Invalid input, please try again");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, please try again");
+            }
+        }
 
     }
 }
