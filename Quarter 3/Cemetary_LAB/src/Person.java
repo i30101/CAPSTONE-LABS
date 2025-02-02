@@ -4,6 +4,11 @@
  * @version 1.0.0
  */
 
+
+import java.util.Comparator;
+import java.time.LocalDate;
+
+
 public class Person {
 
     private final String firstName;
@@ -24,7 +29,7 @@ public class Person {
      * Creates Person class
      * @param fn first name
      * @param ln last name
-     * @param d burial month
+     * @param d burial day
      * @param m burial month
      * @param y burial year
      * @param a age at burial
@@ -77,6 +82,16 @@ public class Person {
         return burialYear;
     }
 
+
+    /**
+     * Burial date format as LocalDate object
+     * @return LocalDate object
+     */
+    public LocalDate getBurialDate() {
+        return LocalDate.of(burialYear, burialMonth, burialDay);
+    }
+
+
     public double getAge() {
         return age;
     }
@@ -100,6 +115,44 @@ public class Person {
     public String getStreetNumber() {
         return streetNumber;
     }
+
+
+    public static class firstNameComparator implements Comparator<Person> {
+        public int compare(Person p1, Person p2) {
+            return p1.getFirstName().compareTo(p2.getFirstName());
+        }
+    }
+
+
+    public static class lastNameComparator implements Comparator<Person> {
+        public int compare(Person p1, Person p2) {
+            return p1.getLastName().compareTo(p2.getLastName());
+        }
+    }
+
+
+    public static class burialDateComparator implements Comparator<Person> {
+        public int compare(Person p1, Person p2) {
+            return p1.getBurialDate().compareTo(p2.getBurialDate());
+        }
+    }
+
+
+    public static class ageComparator implements Comparator<Person> {
+        public int compare(Person p1, Person p2) {
+            return Double.compare(p1.getAge(), p2.getAge());
+        }
+    }
+
+
+    public static class addressComparator implements Comparator<Person> {
+        public int compare(Person p1, Person p2) {
+            return p1.getAddress().compareTo(p2.getAddress());
+        }
+    }
+
+
+
 
 
     /**
