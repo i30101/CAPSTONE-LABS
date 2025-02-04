@@ -5,9 +5,11 @@
  */
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.prefs.PreferenceChangeListener;
+
 
 public class Cemetery {
     private final ArrayList<Person> people;
@@ -44,7 +46,7 @@ public class Cemetery {
         ArrayList<Person> result = new ArrayList<>();
 
         for (Person p : people) {
-            if (p.getName().equals(name)) {
+            if (p.getName().toLowerCase().contains(name.toLowerCase())) {
                 result.add(p);
             }
         }
@@ -61,7 +63,7 @@ public class Cemetery {
         ArrayList<Person> result = new ArrayList<>();
 
         for (Person p : people) {
-            if (p.getFirstName().equals(name)) {
+            if (p.getFirstName().equalsIgnoreCase(name)) {
                 result.add(p);
             }
         }
@@ -79,7 +81,7 @@ public class Cemetery {
         ArrayList<Person> result = new ArrayList<>();
 
         for (Person p : people) {
-            if (p.getLastName().equals(name)) {
+            if (p.getLastName().equalsIgnoreCase(name)) {
                 result.add(p);
             }
         }
@@ -108,11 +110,71 @@ public class Cemetery {
 
 
     /**
+     * Finds mortalities for every year
+     * @return Array of [year, mortalities]
+     */
+    public int[][] yearMortalities() {
+        int[] rawYears = new int[people.size()];
+
+        for (int i = 0; i < people.size(); i++) {
+            rawYears[i] = people.get(i).getBurialYear();
+        }
+
+        Arrays.sort(rawYears);
+
+        int minYear = rawYears[0];
+        int maxYear = rawYears[rawYears.length - 1];
+
+        int[][] result = new int[maxYear - minYear + 1][2];
+
+        for (int i = 0; i < (maxYear - minYear + 1); i++) {
+            result[i][0] = minYear + i;
+        }
+
+        for (Person person : people) {
+            result[person.getBurialYear() - minYear][1]++;
+        }
+
+        return result;
+    }
+
+
+    public int[] deadliestYear() {
+        int[][] mortalities = yearMortalities();
+
+        Arrays.sort(mortalities, Comparator.comparingInt(a -> a[1]));
+
+        return mortalities[mortalities.length - 1];
+    }
+
+
+    public int[] leastDeadlyYear() {
+        int[][] mortalities = yearMortalities();
+
+        Arrays.sort(mortalities, Comparator.comparingInt(a -> a[1]));
+
+        return mortalities[0];
+    }
+
+
+    public double maxAge() {
+        double[] ages = new double[people.size()];
+        for (int i = 0; i < people.size(); i++) {
+            ages[i] = people.get(i).getAge();
+        }
+
+        Arrays.sort(ages);
+
+        return ages[ages.length - 1];
+    }
+
+
+    /**
      * Finds everyone with a given age
      * @param age given age
      * @return number of people
      */
-    public int isAge(int age) {
+    public int countIsAge(int age) {
         int count = 0;
         for (Person p : people) {
             if (p.getAge() == age) {
@@ -125,11 +187,28 @@ public class Cemetery {
 
 
     /**
+     * Everyone with a desired age
+     * @param age desired age
+     * @return list of people
+     */
+    public ArrayList<Person> isAge(int age) {
+        ArrayList<Person> result = new ArrayList<>();
+        for (Person p : people) {
+            if (p.getAge() == age) {
+                result.add(p);
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
       * Finds everyone younger than a given age
       * @param age maximum age
       * @return number of people
      */
-    public int youngerThanAge(int age) {
+    public int countYoungerThanAge(int age) {
         int count = 0;
         for (Person p : people) {
             if (p.getAge() < age) {
@@ -142,11 +221,29 @@ public class Cemetery {
 
 
     /**
+     * Everyone younger than a desired age
+     * @param age desired age
+     * @return list of people
+     */
+    public ArrayList<Person> youngerThanAge(int age) {
+        ArrayList<Person> result = new ArrayList<>();
+
+        for (Person p : people) {
+            if (p.getAge() < age) {
+                result.add(p);
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
      * Finds everyone older than a given age
      * @param age minimum age
      * @return number of people
      */
-    public int olderThanAge(int age) {
+    public int countOlderThanAge(int age) {
         int count = 0;
         for (Person p : people) {
             if (p.getAge() > age) {
@@ -155,6 +252,57 @@ public class Cemetery {
         }
 
         return count;
+    }
+
+
+    /**
+     * Everyone older than a desired age
+     * @param age desired age
+     * @return list of people
+     */
+    public ArrayList<Person> olderThanAge(int age) {
+        ArrayList<Person> result = new ArrayList<>();
+
+        for (Person p : people) {
+            if (p.getAge() > age) {
+                result.add(p);
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * Counts number of infants (1 year or younger)
+     * @return number of infants
+     */
+    public int countInfants() {
+        int count = 0;
+        for (Person p : people) {
+            if (p.getAge() <= 1) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+
+    /**
+     * All infants
+     * @return list of infants
+     */
+    public ArrayList<Person> infants() {
+        ArrayList<Person> result = new ArrayList<>();
+
+        for (Person p : people) {
+            if (p.getAge() <= 1) {
+                result.add(p);
+            }
+        }
+
+        return result;
     }
 
 
