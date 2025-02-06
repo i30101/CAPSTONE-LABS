@@ -39,7 +39,7 @@ public class FileReader {
      * @param s raw age string
      * @return age in years
      */
-    private static double age(String s) {
+    private static double parseAge(String s) {
         if (isInteger(s)) {
             return Double.parseDouble(s);
         } else if (s.contains("d")) {
@@ -76,7 +76,7 @@ public class FileReader {
         int day = (isInteger(dateArray[0])) ? Integer.parseInt(dateArray[0]) : 1;
         int month = java.util.Arrays.asList(months).indexOf(dateArray[1]) + 1;
         int year = Integer.parseInt(dateArray[2]);
-        double age = age(dateArray[3]);
+        double age = parseAge(dateArray[3]);
 
         // parse address data
         String address = data.substring(42);
