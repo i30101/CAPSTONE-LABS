@@ -8,7 +8,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.prefs.PreferenceChangeListener;
 
 
 public class Cemetery {
@@ -384,9 +383,15 @@ public class Cemetery {
      * Sorts people by address
      * @return list of people
      */
-    public ArrayList<Person> sortAddress() {
+    public ArrayList<String> sortAddress() {
         people.sort(new Person.addressComparator());
-        return people;
+
+        ArrayList<String> result = new ArrayList<>();
+        for (Person p : people) {
+            result.add(p.toString() + " " + p.getAddress());
+        }
+
+        return result;
     }
 
 
@@ -396,11 +401,6 @@ public class Cemetery {
                                 ACCESSOR METHODS
 
      **************************************************************** */
-
-    public ArrayList<Person> getPeople() {
-        return people;
-    }
-
 
     @Override
     public String toString() {
