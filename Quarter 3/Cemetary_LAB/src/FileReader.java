@@ -128,8 +128,8 @@ public class FileReader {
 
             return people;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<Person>();
+            System.out.println("File reading failed");
+            return new ArrayList<>();
         }
     }
 }
