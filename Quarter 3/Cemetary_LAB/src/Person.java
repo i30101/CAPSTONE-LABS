@@ -21,8 +21,6 @@ public class Person {
     private final double age;
 
     private final String address;
-    private final String street;
-    private final String streetNumber;
 
 
     /**
@@ -53,8 +51,6 @@ public class Person {
         age = a;
 
         address = ad;
-        street = st;
-        streetNumber = stn;
     }
 
 
@@ -106,14 +102,6 @@ public class Person {
 
     public String getAddress() {
         return address;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public String getStreetNumber() {
-        return streetNumber;
     }
 
 
